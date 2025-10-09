@@ -23,7 +23,7 @@ export default function App() {
       setIsProcessing(false);
       const jumlahPakaian = garment2 ? 'dua pakaian' : 'satu pakaian';
       alert(
-        `Coba pakaian virtual akan dibuat di sini dengan ${jumlahPakaian}! Ini hanya demo.`
+        `hi saya demo.`
       );
     }, 2000);
   };

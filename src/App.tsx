@@ -23,7 +23,7 @@ export default function App() {
       setIsProcessing(false);
       const jumlahPakaian = garment2 ? 'dua pakaian' : 'satu pakaian';
       alert(
-        `hi saya demo.`
+        `hi saya demo. (${jumlahPakaian} terupload)`
       );
     }, 2000);
   };

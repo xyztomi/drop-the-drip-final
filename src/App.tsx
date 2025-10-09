@@ -42,9 +42,6 @@ export default function App() {
               <h2 className="text-2xl md:text-3xl font-black uppercase tracking-wider">
                 Cara Penggunaan
               </h2>
-              <p className="text-[0.65rem] md:text-xs font-black uppercase tracking-[0.35em] text-black/60">
-                3 langkah mudah · sapu geser untuk lihat semua
-              </p>
             </div>
 
             <div className="relative mt-6 md:mt-8">
@@ -60,7 +57,7 @@ export default function App() {
                           0{index + 1}
                         </span>
                         <span className="ml-2 text-[0.6rem] font-black uppercase tracking-[0.4em] text-white/70">
-                          langkah
+                          💅💧
                         </span>
                       </div>
                       <div className="px-3 py-4">

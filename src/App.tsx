@@ -245,7 +245,7 @@ export default function App() {
           </div>
 
           <div className="border-t-4 border-black mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs md:text-sm font-black uppercase tracking-wider">
-            <span>© {currentYear} OptiMind Labs. Semua Hak Dilindungi.</span>
+            <span>© {currentYear} OptiMind Labs.</span>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <span className="border-b-2 border-transparent hover:border-black transition-colors">Kebijakan Privasi</span>
               <span className="border-b-2 border-transparent hover:border-black transition-colors">Syarat Layanan</span>

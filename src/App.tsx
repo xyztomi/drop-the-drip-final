@@ -168,10 +168,10 @@ export default function App() {
                   </div>
                   <figcaption className="p-4 border-t-4 border-black bg-white">
                     <p className="text-sm font-black uppercase tracking-wider">
-                      Model Studio {item}
+                      Model {item}
                     </p>
                     <p className="mt-2 text-xs text-black/70">
-                      perpaduan outfit digital · musim {item === 1 ? 'PanAs' : item === 2 ? 'PengHujan' : 'Festival'} · render gaya majalah
+                      test
                     </p>
                   </figcaption>
                 </figure>

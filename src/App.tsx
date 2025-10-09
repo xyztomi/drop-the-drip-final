@@ -1,7 +1,7 @@
 import { SimpleHeader } from './components/SimpleHeader';
 import { UploadBox } from './components/UploadBox';
 import { Turnstile } from './components/Turnstile';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { steps } from './steps';
 
@@ -36,39 +36,46 @@ export default function App() {
       {/* Main Content */}
       <div className="container mx-auto px-6 pb-16">
         {/* Instructions */}
-        <section className="max-w-5xl mx-auto mb-12">
-          <div className="bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_#000000]">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <h2 className="text-3xl font-black uppercase tracking-wider">
+        <section className="max-w-5xl mx-auto mb-8 md:mb-12">
+          <div className="bg-white border-4 border-black px-5 py-6 md:p-8 shadow-[8px_8px_0px_0px_#000000]">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-wider">
                 Cara Penggunaan
               </h2>
+              <p className="text-[0.65rem] md:text-xs font-black uppercase tracking-[0.35em] text-black/60">
+                3 langkah mudah · sapu geser untuk lihat semua
+              </p>
             </div>
 
-            <ol className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {steps.map((step, index) => (
-                <li
-                  key={step.title}
-                  className="border-4 border-black bg-white flex flex-col h-full shadow-[6px_6px_0px_0px_#000000]"
-                >
-                  <div className="flex items-center gap-3 border-b-4 border-black bg-black text-white px-4 py-3">
-                    <span className="text-lg font-black uppercase tracking-wider">
-                      0{index + 1}
-                    </span>
-                    <span className="text-lg font-black uppercase tracking-wider">
-                      {step.title}
-                    </span>
-                  </div>
-                  <p className="flex-1 px-4 py-4 text-sm leading-relaxed text-left">
-                    {step.description}
-                  </p>
-                  {index < steps.length - 1 && (
-                    <div className="md:hidden flex justify-center pb-4">
-                      <ArrowRight className="w-6 h-6 rotate-90 text-black" />
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ol>
+            <div className="relative mt-6 md:mt-8">
+              <div className="-mx-5 px-5 md:mx-0 md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-none">
+                <ol className="flex gap-4 min-w-max snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-6 md:min-w-0">
+                  {steps.map((step, index) => (
+                    <li
+                      key={step.title}
+                      className="w-[220px] md:w-auto flex-shrink-0 border-4 border-black bg-white shadow-[6px_6px_0px_0px_#000000] snap-center transition-transform duration-200 ease-out hover:-translate-y-1 md:h-full"
+                    >
+                      <div className="flex items-center justify-between border-b-4 border-black bg-black text-white px-3 py-2">
+                        <span className="text-base font-black uppercase tracking-wider">
+                          0{index + 1}
+                        </span>
+                        <span className="ml-2 text-[0.6rem] font-black uppercase tracking-[0.4em] text-white/70">
+                          langkah
+                        </span>
+                      </div>
+                      <div className="px-3 py-4">
+                        <p className="text-sm font-black uppercase tracking-wider mb-2">
+                          {step.title}
+                        </p>
+                        <p className="text-xs leading-relaxed text-left text-black/80">
+                          {step.description}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
           </div>
         </section>
 

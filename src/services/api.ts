@@ -4,7 +4,7 @@
  */
 
 // const API_BASE_URL = "https://mines-cinema-star-distant.trycloudflare.com";
-const API_BASE_URL = "https://dropthedrip.koyeb.app/";
+const API_BASE_URL = "https://dropthedrip.koyeb.app";
 
 export interface TryOnResponse {
 	success: boolean;

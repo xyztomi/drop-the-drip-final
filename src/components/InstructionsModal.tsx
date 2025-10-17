@@ -40,23 +40,7 @@ export function InstructionsModal({ isOpen, onClose }: InstructionsModalProps) {
 
         <div className="p-4 md:p-6 space-y-6">
           {/* Video/GIF Embed Section */}
-          <section>
-            <div className="border-4 border-black bg-[--background] aspect-video flex items-center justify-center shadow-[4px_4px_0px_0px_#000000]">
-              <div className="text-center p-4">
-                <p className="text-[11px] uppercase mb-1">📹 Video Tutorial</p>
-                <p className="text-[10px] text-black/70 leading-relaxed">
-                  Sematkan GIF atau video tutorial Anda di area ini untuk menjelaskan cara penggunaan.
-                </p>
-              </div>
 
-              {/* Contoh: sematkan video atau GIF di sini */}
-              {/*
-              <video controls className="w-full h-full" poster="/thumbnail.jpg">
-                <source src="/tutorial.mp4" type="video/mp4" />
-              </video>
-              */}
-            </div>
-          </section>
 
           {/* Steps */}
           <section>
@@ -70,7 +54,7 @@ export function InstructionsModal({ isOpen, onClose }: InstructionsModalProps) {
                 description: 'Unggah minimal satu foto pakaian. Anda bisa menambahkan pakaian kedua sebagai opsi.',
               }, {
                 title: 'Verifikasi Keamanan',
-                description: 'Selesaikan verifikasi Cloudflare Turnstile untuk memastikan keamanan proses.',
+                description: 'Selesaikan verifikasi Captcha untuk memastikan keamanan.',
               }, {
                 title: 'Klik Submit & Lihat Hasil',
                 description: 'Tekan tombol Submit dan tunggu hasil virtual try-on muncul di halaman.',

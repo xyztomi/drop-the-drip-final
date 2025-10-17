@@ -69,7 +69,6 @@ export async function submitTryOn(
 		method: "POST",
 		headers: {
 			"X-Turnstile-Token": turnstileToken,
-			"test-code": "widetech",
 		},
 		body: formData,
 	});

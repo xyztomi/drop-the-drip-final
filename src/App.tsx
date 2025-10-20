@@ -6,8 +6,10 @@ import { Sparkles, HelpCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { submitTryOn } from "./services/api";
+import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
+  const { user, isAuthenticated } = useAuth();
   const [modelImage, setModelImage] = useState<string | null>(null);
   const [garment1, setGarment1] = useState<string | null>(null);
   const [garment2, setGarment2] = useState<string | null>(null);
@@ -89,6 +91,17 @@ export default function App() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 md:px-6 pb-12 md:pb-16">
+        {/* Welcome Message for Authenticated Users */}
+        {isAuthenticated && (
+          <div className="max-w-4xl mx-auto mb-6 md:mb-8">
+            <div className="border-4 border-black bg-[--accent] px-4 py-3 shadow-[4px_4px_0px_0px_#000000]">
+              <p className="text-sm md:text-base font-bold">
+                👋 Selamat datang kembali, <span className="uppercase">{user?.name}</span>!
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Upload Grid */}
         <div className="max-w-7xl mx-auto mb-10 md:mb-12">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">

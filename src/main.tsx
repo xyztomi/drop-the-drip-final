@@ -6,16 +6,19 @@ import App from './App.tsx'
 import { KebijakanPrivasi } from './pages/KebijakanPrivasi.tsx'
 import { SyaratLayanan } from './pages/SyaratLayanan.tsx'
 import { Dukungan } from './pages/Dukungan.tsx'
+import { AuthProvider } from './contexts/AuthContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/kebijakan-privasi" element={<KebijakanPrivasi />} />
-        <Route path="/syarat-layanan" element={<SyaratLayanan />} />
-        <Route path="/dukungan" element={<Dukungan />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/kebijakan-privasi" element={<KebijakanPrivasi />} />
+          <Route path="/syarat-layanan" element={<SyaratLayanan />} />
+          <Route path="/dukungan" element={<Dukungan />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>,
 )

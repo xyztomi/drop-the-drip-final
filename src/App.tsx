@@ -80,7 +80,7 @@ export default function App() {
       {/* Floating Help Button */}
       <button
         onClick={() => setShowInstructions(true)}
-        className="fixed bottom-6 right-6 z-40 p-3 bg-[--accent] border-4 border-black shadow-[4px_4px_0px_0px_#000000] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all group"
+        className="fixed bottom-6 right-6 z-40 p-3 bg-white border-4 border-black shadow-[4px_4px_0px_0px_#000000] hover:bg-[--accent] hover:shadow-[6px_6px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all group"
         aria-label="Cara Penggunaan"
       >
         <HelpCircle className="w-5 h-5" />

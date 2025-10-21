@@ -1,17 +1,8 @@
 import { Droplet, User, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { useState } from 'react';
-import { AuthModal } from './AuthModal';
 
 export function SimpleHeader() {
   const { user, logout, isAuthenticated } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-
-  const handleAuthClick = (mode: 'login' | 'signup') => {
-    setAuthMode(mode);
-    setShowAuthModal(true);
-  };
 
   return (
     <>
@@ -35,14 +26,16 @@ export function SimpleHeader() {
             ) : (
               <>
                 <button
-                  onClick={() => handleAuthClick('login')}
-                  className="px-4 py-2 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold text-sm uppercase"
+                  disabled
+                  className="px-4 py-2 border-2 border-black bg-gray-200 text-gray-500 font-bold text-sm uppercase cursor-not-allowed"
+                  title="Autentikasi sementara dinonaktifkan"
                 >
                   Masuk
                 </button>
                 <button
-                  onClick={() => handleAuthClick('signup')}
-                  className="px-4 py-2 border-2 border-black bg-[--accent] hover:shadow-[4px_4px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all font-bold text-sm uppercase"
+                  disabled
+                  className="px-4 py-2 border-2 border-black bg-gray-200 text-gray-500 font-bold text-sm uppercase cursor-not-allowed"
+                  title="Autentikasi sementara dinonaktifkan"
                 >
                   Daftar
                 </button>
@@ -80,14 +73,16 @@ export function SimpleHeader() {
             ) : (
               <>
                 <button
-                  onClick={() => handleAuthClick('login')}
-                  className="px-4 py-2 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors font-bold text-xs uppercase"
+                  disabled
+                  className="px-4 py-2 border-2 border-black bg-gray-200 text-gray-500 font-bold text-xs uppercase cursor-not-allowed"
+                  title="Autentikasi sementara dinonaktifkan"
                 >
                   Masuk
                 </button>
                 <button
-                  onClick={() => handleAuthClick('signup')}
-                  className="px-4 py-2 border-2 border-black bg-[--accent] hover:shadow-[3px_3px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all font-bold text-xs uppercase"
+                  disabled
+                  className="px-4 py-2 border-2 border-black bg-gray-200 text-gray-500 font-bold text-xs uppercase cursor-not-allowed"
+                  title="Autentikasi sementara dinonaktifkan"
                 >
                   Daftar
                 </button>
@@ -97,11 +92,6 @@ export function SimpleHeader() {
         </div>
       </header>
 
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        initialMode={authMode}
-      />
     </>
   );
 }

@@ -1,5 +1,5 @@
-import { Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { Image, Upload, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import type { ChangeEvent, DragEvent } from 'react';
 
 interface UploadBoxProps {
@@ -8,9 +8,27 @@ interface UploadBoxProps {
   onImageUpload?: (image: string | null) => void;
 }
 
+const EXAMPLE_IMAGES: Record<string, string> = {
+  'Foto Model': '/examples/model-best.jpg',
+  'Pakaian 1': '/examples/garment-1-best.jpg',
+  'Pakaian 2': '/examples/garment-2-best.jpg',
+};
+
+const EXAMPLE_NOTES: Record<string, string> = {
+  'Foto Model': 'Potret penuh tubuh dengan pose tegak, latar sederhana, dan cahaya merata.',
+  'Pakaian 1': 'Foto pakaian gantung dengan lipatan rapi dan latar polos agar detail jelas.',
+  'Pakaian 2': 'Gunakan sudut lurus dengan pencahayaan terang untuk warna yang akurat.',
+};
+
 export function UploadBox({ label, required = false, onImageUpload }: UploadBoxProps) {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  const exampleImage = useMemo(() => EXAMPLE_IMAGES[label] ?? '/examples/default-best.jpg', [label]);
+  const exampleNote = useMemo(
+    () => EXAMPLE_NOTES[label] ?? 'Pastikan foto tajam, menyeluruh, dan mudah diproses.',
+    [label]
+  );
 
   const handleFileUpload = (file: File) => {
     const reader = new FileReader();
@@ -62,8 +80,8 @@ export function UploadBox({ label, required = false, onImageUpload }: UploadBoxP
 
         {!uploadedImage ? (
           <div
-            className={`relative border-4 border-dashed ${isDragging ? 'border-[--accent] bg-[--accent]/15' : 'border-black'
-              } h-52 md:h-72 lg:h-96 flex flex-col items-center justify-center gap-3 cursor-pointer overflow-hidden transition-all duration-300 ease-out group-hover:border-black group-hover:bg-[--accent]/10 group-hover:shadow-[5px_5px_0px_0px_#000000] md:group-hover:shadow-[8px_8px_0px_0px_#000000] active:scale-[0.98]`}
+            className={`group relative border-4 border-dashed ${isDragging ? 'border-[--accent] bg-[--accent]/15' : 'border-black'
+              } h-52 md:h-72 lg:h-96 flex flex-col items-center justify-center gap-3 cursor-pointer overflow-visible transition-all duration-300 ease-out group-hover:border-black group-hover:bg-[--accent]/10 group-hover:shadow-[5px_5px_0px_0px_#000000] md:group-hover:shadow-[8px_8px_0px_0px_#000000] active:scale-[0.98]`}
             onDrop={handleDrop}
             onDragOver={(event) => event.preventDefault()}
             onDragEnter={() => setIsDragging(true)}
@@ -86,6 +104,28 @@ export function UploadBox({ label, required = false, onImageUpload }: UploadBoxP
               onChange={handleFileSelect}
               className="hidden"
             />
+            <div className="pointer-events-none absolute left-1/2 bottom-full z-30 mb-2 hidden w-48 -translate-x-1/2 group-hover:flex">
+              <div className="relative border-4 border-black bg-white p-3 shadow-[6px_6px_0px_0px_#000000] after:absolute after:-bottom-[10px] after:left-1/2 after:-translate-x-1/2 after:h-0 after:w-0 after:border-[10px] after:border-transparent after:border-t-black after:content-[''] before:absolute before:-bottom-[8px] before:left-1/2 before:-translate-x-1/2 before:h-0 before:w-0 before:border-[9px] before:border-transparent before:border-t-white before:content-['']">
+                <div className="flex items-center gap-2 pb-1.5">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-black bg-[--accent] text-black">
+                    <Image className="h-3.5 w-3.5" />
+                  </div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wide text-black">
+                    Contoh ideal
+                  </div>
+                </div>
+                <div className="h-40 w-28 overflow-hidden border-2 border-black bg-[--background]">
+                  <img
+                    src={exampleImage}
+                    alt={`Contoh ${label}`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <p className="mt-2 text-[10px] leading-relaxed text-black/70">
+                  {exampleNote}
+                </p>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="relative group/image">
@@ -106,12 +146,6 @@ export function UploadBox({ label, required = false, onImageUpload }: UploadBoxP
           </div>
         )}
 
-        {!uploadedImage && (
-          <div className="mt-3 hidden flex-col gap-1 text-[11px] text-black/60 md:flex">
-            <span>Tip: foto tegak lurus membantu hasil lebih akurat.</span>
-            <span>Gunakan latar sederhana agar pakaian mudah terbaca.</span>
-          </div>
-        )}
       </div>
     </div>
   );

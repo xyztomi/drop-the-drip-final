@@ -39,8 +39,16 @@ export function InstructionsModal({ isOpen, onClose }: InstructionsModalProps) {
         </div>
 
         <div className="p-4 md:p-6 space-y-6">
-          {/* Video/GIF Embed Section */}
-
+          {/* Contoh Hasil */}
+          <section>
+            <div className="mx-auto w-full max-w-xs md:max-w-sm border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000000] overflow-hidden">
+              <img
+                src="/hasil1.png"
+                alt="Contoh hasil try-on"
+                className="w-full h-auto"
+              />
+            </div>
+          </section>
 
           {/* Steps */}
           <section>

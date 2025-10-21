@@ -246,23 +246,25 @@ export default function App() {
               </div>
 
               <div className="mt-6 md:mt-8 grid gap-4 md:gap-6 md:grid-cols-3">
-                {[1, 2, 3].map((item) => (
+                {[
+                  { id: 1, src: '/hasil1.png' },
+                  { id: 2, src: '/hasil2.png' },
+                  { id: 3, src: '/hasil3.png' },
+                ].map((item) => (
                   <figure
-                    key={item}
-                    className="group border-4 border-black bg-[--background] overflow-hidden shadow-[6px_6px_0px_0px_#000000] md:shadow-[8px_8px_0px_0px_#000000]"
+                    key={item.id}
+                    className="group border-4 border-black bg-white overflow-hidden shadow-[6px_6px_0px_0px_#000000] md:shadow-[8px_8px_0px_0px_#000000]"
                   >
-                    <div className="relative aspect-[3/4] bg-gradient-to-br from-[#f5f5f5] via-[#ffffff] to-[#e5e5e5] flex items-center justify-center">
-                      <div className="absolute inset-4 border-4 border-dashed border-black/30"></div>
-                      <span className="text-4xl md:text-7xl font-black text-black/20">
-                        #{item}
-                      </span>
+                    <div className="relative aspect-[3/4] overflow-hidden border-b-4 border-black bg-[--background]">
+                      <img
+                        src={item.src}
+                        alt={`Contoh hasil ${item.id}`}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      />
                     </div>
-                    <figcaption className="p-3 md:p-4 border-t-4 border-black bg-white">
+                    <figcaption className="p-3 md:p-4 bg-white">
                       <p className="text-xs md:text-sm font-black uppercase tracking-wider">
-                        Model {item}
-                      </p>
-                      <p className="mt-2 text-[11px] md:text-xs text-black/70">
-                        test
+                        Model {item.id}
                       </p>
                     </figcaption>
                   </figure>

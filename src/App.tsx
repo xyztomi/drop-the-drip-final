@@ -1,5 +1,5 @@
 import { SimpleHeader } from "./components/SimpleHeader";
-import { UploadBox } from "./components/UploadBox";
+import UploadBox from "./components/UploadBox";
 import { Turnstile } from "./components/Turnstile";
 import { InstructionsModal } from "./components/InstructionsModal";
 import { Sparkles, HelpCircle } from "lucide-react";

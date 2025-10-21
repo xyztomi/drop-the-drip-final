@@ -4,7 +4,7 @@
  */
 
 // const API_BASE_URL = "https://mines-cinema-star-distant.trycloudflare.com";
-const API_BASE_URL = "https://dropthedrip.koyeb.app";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 export interface TryOnResponse {
 	success: boolean;
@@ -15,6 +15,21 @@ export interface TryOnResponse {
 
 export interface TryOnError {
 	detail: string;
+}
+
+export interface TryOnAuditPayload {
+	model_before: string;
+	model_after: string;
+	garment1: string;
+	garment2?: string;
+}
+
+export interface TryOnAuditResponse {
+	clothing_changed: boolean;
+	matches_input_garments: boolean;
+	visual_quality_score: number;
+	issues: string[];
+	summary: string;
 }
 
 /**
@@ -82,5 +97,33 @@ export async function submitTryOn(
 	}
 
 	const data: TryOnResponse = await response.json();
+	return data;
+}
+
+/**
+ * Audit a generated try-on result using the backend vision audit endpoint.
+ */
+export async function auditTryOnResult(
+	payload: TryOnAuditPayload
+): Promise<TryOnAuditResponse> {
+	const response = await fetch(`${API_BASE_URL}/api/v1/tryon/audit`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(payload),
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json();
+		const detail = Array.isArray(errorData?.detail)
+			? errorData.detail.map((item: { msg?: string }) => item?.msg).join(", ")
+			: errorData?.detail;
+		throw new Error(
+			detail || `HTTP ${response.status}: ${response.statusText}`
+		);
+	}
+
+	const data: TryOnAuditResponse = await response.json();
 	return data;
 }

@@ -195,9 +195,6 @@ export default function App() {
                 <button
                   onClick={() => {
                     setResultImage(null);
-                    setModelImage(null);
-                    setGarment1(null);
-                    setGarment2(null);
                     setTurnstileToken(null);
                     setError(null);
                     setTurnstileKey(prev => prev + 1);

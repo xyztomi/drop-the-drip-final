@@ -51,9 +51,6 @@ export function UploadBox({ label, required = false, onImageUpload }: UploadBoxP
             <h3 className="text-base md:text-xl font-semibold text-black tracking-tight">
               {label}
             </h3>
-            <p className="hidden text-xs text-black/60 md:block">
-              Foto terang dan fokus akan menghasilkan try-on terbaik.
-            </p>
           </div>
           <span
             className={`inline-flex items-center justify-center rounded-full border-2 border-black px-2 py-0.5 text-[10px] md:text-xs tracking-wide ${required ? 'bg-[--accent] text-black' : 'bg-white text-black/70'
@@ -100,7 +97,7 @@ export function UploadBox({ label, required = false, onImageUpload }: UploadBoxP
             />
             <button
               onClick={handleRemove}
-              className="absolute top-3 right-3 z-20 bg-[--destructive] text-white px-2.5 py-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000000] md:shadow-[4px_4px_0px_0px_#000000] transition-all duration-200 hover:shadow-[5px_5px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5"
+              className="absolute top-3 right-3 z-20 bg-[--destructive] text-black px-2.5 py-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000000] md:shadow-[4px_4px_0px_0px_#000000] transition-all duration-200 hover:shadow-[5px_5px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5"
             >
               <span className="flex items-center gap-1 text-xs font-medium">
                 <X className="w-3.5 h-3.5" /> Hapus

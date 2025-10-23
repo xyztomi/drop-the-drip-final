@@ -5,7 +5,7 @@ import { InstructionsModal } from "./components/InstructionsModal";
 import { Sparkles, HelpCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { submitTryOn } from "./services/api";
+import { submitTryOn, getRateLimitStatus, type RateLimitStatus, type TryOnAuditResponse } from "./services/api";
 import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
@@ -19,7 +19,23 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [turnstileKey, setTurnstileKey] = useState(0);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [rateLimit, setRateLimit] = useState<RateLimitStatus | null>(null);
+  const [auditResult, setAuditResult] = useState<TryOnAuditResponse | null>(null);
+
   const currentYear = new Date().getFullYear();
+
+  // Fetch rate limit status on mount
+  useEffect(() => {
+    const fetchRateLimit = async () => {
+      try {
+        const status = await getRateLimitStatus();
+        setRateLimit(status);
+      } catch (err) {
+        console.error('Failed to fetch rate limit:', err);
+      }
+    };
+    fetchRateLimit();
+  }, []);
 
   // Show instructions modal on first visit
   useEffect(() => {
@@ -38,8 +54,10 @@ export default function App() {
     setIsProcessing(true);
     setError(null);
     setResultImage(null);
+    setAuditResult(null);
 
     try {
+      // Backend now handles retry and audit automatically
       const response = await submitTryOn(
         modelImage,
         garment1,
@@ -48,6 +66,30 @@ export default function App() {
       );
 
       setResultImage(response.result_url);
+
+      // Get audit result from backend response
+      if (response.audit) {
+        setAuditResult(response.audit);
+        console.log('✅ Audit result from backend:', response.audit);
+      }
+
+      // Get retry count from backend
+      if (response.retry_count !== undefined) {
+        console.log(`✅ Generated after ${response.retry_count + 1} attempt(s)`);
+      }
+
+      // Update rate limit info if present in response
+      if (response.rateLimit) {
+        setRateLimit({
+          allowed: response.rateLimit.remaining > 0,
+          remaining: response.rateLimit.remaining,
+          reset_at: response.rateLimit.reset,
+          total_today: response.rateLimit.total,
+          limit: response.rateLimit.limit,
+          message: `${response.rateLimit.remaining} requests remaining today`
+        });
+      }
+
 
       // Scroll to result section after successful generation
       setTimeout(() => {
@@ -176,6 +218,19 @@ export default function App() {
             </p>
           )}
 
+          {/* Rate Limit Info */}
+          {rateLimit && (
+            <div className={`mt-3 border-2 border-black px-3 py-2 text-center ${rateLimit.allowed ? 'bg-green-50' : 'bg-red-50'
+              }`}>
+              <p className="text-[10px] md:text-xs font-bold uppercase">
+                {rateLimit.allowed ? '✅' : '⚠️'} Rate Limit: {rateLimit.remaining}/{rateLimit.limit} tersisa
+              </p>
+              <p className="text-[9px] md:text-[10px] text-black/70 mt-0.5">
+                Reset: {new Date(rateLimit.reset_at).toLocaleTimeString('id-ID')}
+              </p>
+            </div>
+          )}
+
           {error && (
             <div className="mt-4 border-4 border-black bg-red-100 text-black px-4 py-3">
               <p className="font-black uppercase text-xs md:text-sm">⚠️ ERROR</p>
@@ -197,6 +252,7 @@ export default function App() {
                     setResultImage(null);
                     setTurnstileToken(null);
                     setError(null);
+                    setAuditResult(null);
                     setTurnstileKey(prev => prev + 1);
                   }}
                   className="px-3 py-2 border-4 border-black bg-white font-black uppercase text-xs md:text-sm hover:shadow-[4px_4px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all"
@@ -230,6 +286,74 @@ export default function App() {
                 >
                   🔗 Salin Link
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Audit Result Section */}
+        {auditResult && (
+          <div id="audit-section" className="max-w-4xl mx-auto mt-6 md:mt-8">
+            <div className="border-4 border-black bg-white p-5 md:p-6 shadow-[8px_8px_0px_0px_#000000] md:shadow-[10px_10px_0px_0px_#000000]">
+              <h3 className="text-xl md:text-2xl font-black uppercase tracking-wider mb-4">
+                📊 Hasil Audit Kualitas
+              </h3>
+
+              {/* Quality Metrics */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4">
+                <div className="border-2 border-black p-3 bg-gray-50">
+                  <div className="text-xs font-bold uppercase text-black/70 mb-1">Pakaian Berubah</div>
+                  <div className="text-lg md:text-xl font-black">
+                    {auditResult.clothing_changed ? '✅ Ya' : '❌ Tidak'}
+                  </div>
+                </div>
+                <div className="border-2 border-black p-3 bg-gray-50">
+                  <div className="text-xs font-bold uppercase text-black/70 mb-1">Sesuai Input</div>
+                  <div className="text-lg md:text-xl font-black">
+                    {auditResult.matches_input_garments ? '✅ Ya' : '❌ Tidak'}
+                  </div>
+                </div>
+                <div className="border-2 border-black p-3 bg-gray-50">
+                  <div className="text-xs font-bold uppercase text-black/70 mb-1">Skor Kualitas</div>
+                  <div className="text-lg md:text-xl font-black">
+                    {auditResult.visual_quality_score}/100
+                  </div>
+                </div>
+              </div>
+
+              {/* Quality Score Bar */}
+              <div className="mb-4">
+                <div className="w-full h-8 border-4 border-black bg-white overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-500 ${auditResult.visual_quality_score >= 80
+                      ? 'bg-green-400'
+                      : auditResult.visual_quality_score >= 60
+                        ? 'bg-yellow-400'
+                        : 'bg-red-400'
+                      }`}
+                    style={{ width: `${auditResult.visual_quality_score}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Issues */}
+              {auditResult.issues && auditResult.issues.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm md:text-base font-black uppercase mb-2">⚠️ Masalah Terdeteksi:</h4>
+                  <ul className="space-y-1">
+                    {auditResult.issues.map((issue, index) => (
+                      <li key={index} className="text-xs md:text-sm border-l-4 border-red-500 pl-3 py-1">
+                        {issue}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Summary */}
+              <div className="border-2 border-black bg-blue-50 p-3 md:p-4">
+                <h4 className="text-sm md:text-base font-black uppercase mb-2">📝 Ringkasan:</h4>
+                <p className="text-xs md:text-sm leading-relaxed">{auditResult.summary}</p>
               </div>
             </div>
           </div>

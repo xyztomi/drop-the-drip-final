@@ -12,23 +12,46 @@ export interface TryOnResponse {
 	record_id: string;
 	result_url: string;
 	message: string;
+	// URLs of uploaded images
+	body_url: string;
+	garment_urls: string[];
+	// Audit result from backend (auto-audit)
+	audit?: TryOnAuditResponse | null;
+	// Number of retries performed
+	retry_count?: number;
+	// Optional rate limit info extracted from headers
+	rateLimit?: {
+		limit: number;
+		remaining: number;
+		reset: string;
+		total: number;
+	};
 }
 
 export interface TryOnError {
 	detail: string;
 }
 
+export interface RateLimitStatus {
+	allowed: boolean;
+	remaining: number;
+	reset_at: string;
+	total_today: number;
+	limit: number;
+	message: string;
+}
+
 export interface TryOnAuditPayload {
-	model_before: string;
-	model_after: string;
-	garment1: string;
-	garment2?: string;
+	model_before: string; // URL or base64
+	model_after: string; // URL or base64
+	garment1: string; // URL or base64
+	garment2?: string; // Optional, URL or base64
 }
 
 export interface TryOnAuditResponse {
 	clothing_changed: boolean;
 	matches_input_garments: boolean;
-	visual_quality_score: number;
+	visual_quality_score: number; // 0-100
 	issues: string[];
 	summary: string;
 }
@@ -98,20 +121,58 @@ export async function submitTryOn(
 	}
 
 	const data: TryOnResponse = await response.json();
+
+	// Extract rate limit headers if present
+	const rateLimitHeader = response.headers.get("X-RateLimit-Limit");
+	const rateLimitRemaining = response.headers.get("X-RateLimit-Remaining");
+	const rateLimitReset = response.headers.get("X-RateLimit-Reset");
+	const rateLimitTotal = response.headers.get("X-RateLimit-Total");
+
+	if (rateLimitHeader && rateLimitRemaining && rateLimitReset) {
+		data.rateLimit = {
+			limit: parseInt(rateLimitHeader),
+			remaining: parseInt(rateLimitRemaining),
+			reset: rateLimitReset,
+			total: rateLimitTotal ? parseInt(rateLimitTotal) : 0,
+		};
+	}
+
 	return data;
 }
 
 /**
- * Audit a generated try-on result using the backend vision audit endpoint.
+ * Audit a try-on output using Gemini vision capabilities.
+ *
+ * Protected by Turnstile to prevent abuse. Useful for frontend to manually
+ * trigger quality checks and track audit history.
+ *
+ * @param payload - Audit payload with model_before, model_after, garment1, garment2
+ * @param turnstileToken - Cloudflare Turnstile token (required, unless test-code provided)
+ * @param testCode - Optional test bypass code
+ * @returns Promise resolving to audit result with quality metrics
  */
 export async function auditTryOnResult(
-	payload: TryOnAuditPayload
+	payload: TryOnAuditPayload,
+	turnstileToken?: string,
+	testCode?: string
 ): Promise<TryOnAuditResponse> {
+	const headers: Record<string, string> = {
+		"Content-Type": "application/json",
+	};
+
+	// Add Turnstile token if provided
+	if (turnstileToken) {
+		headers["X-Turnstile-Token"] = turnstileToken;
+	}
+
+	// Add test code if provided
+	if (testCode) {
+		headers["test-code"] = testCode;
+	}
+
 	const response = await fetch(`${API_BASE_URL}/api/v1/tryon/audit`, {
 		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
+		headers,
 		body: JSON.stringify(payload),
 	});
 
@@ -126,5 +187,26 @@ export async function auditTryOnResult(
 	}
 
 	const data: TryOnAuditResponse = await response.json();
+	return data;
+}
+
+/**
+ * Check the current rate limit status for the requesting IP.
+ *
+ * @returns Promise resolving to rate limit status
+ */
+export async function getRateLimitStatus(): Promise<RateLimitStatus> {
+	const response = await fetch(`${API_BASE_URL}/api/v1/ratelimit`, {
+		method: "GET",
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json();
+		throw new Error(
+			errorData.detail || `HTTP ${response.status}: ${response.statusText}`
+		);
+	}
+
+	const data: RateLimitStatus = await response.json();
 	return data;
 }
